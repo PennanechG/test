@@ -15,7 +15,7 @@ class BlogController extends AbstractController
     /**
      * Show all row from article's entity
      *
-     * @Route("/", name="index")
+     * @Route("/blog", name="blog")
      * @return Response A response instance
      */
     public function index(): Response
@@ -25,15 +25,10 @@ class BlogController extends AbstractController
             ->findAll();
 
         if (!$articles) {
-            throw $this->createNotFoundException(
-                'No article found in article\'s table.'
-            );
+            throw $this->createNotFoundException('No article found in article\'s table.');
         }
 
-        return $this->render(
-            'blog/index.html.twig',
-            ['articles' => $articles]
-        );
+        return $this->render('/index.html.twig',['articles' => $articles]);
     }
 
     /**
@@ -52,7 +47,7 @@ class BlogController extends AbstractController
                 ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
         }
 
-        $cleanSlug = ucwords(str_replace("-"," ",$slug));
+        $slug = ucwords(str_replace("-"," ",$slug));
 
 
         $article = $this->getDoctrine()
@@ -66,40 +61,36 @@ class BlogController extends AbstractController
         }
 
         return $this->render(
-            'blog/show.html.twig', ['article' => $article,'slug' => $slug,]);
+            '/show.html.twig', ['article' => $article,'slug' => $slug,]);
     }
 
+    // Fonction permétant de retourné la page category.html.twig et demander la récupération des informations nécessaires dans la BDD.
+
     /**
-     * Getting a article with a formatted slug for title
-     *
-     * @param string $categoryName The slugger
-     *
-     * @Route("/blog/show/{$categoryName}", methods={"GET"}, name="show_category")
+     * @Route("/category/{categoryName}", methods={"GET"}, name="category")
      *
      * @return Response A response instance
      */
-    public function showByCategory($categoryName)
+    public function showByCategory(string $categoryName) : Response
     {
+        // Si $categoryName n'exite pas alors retourné la phrase 'No find category in category's table.'
         if (!$categoryName) {
             throw $this
-                ->createNotFoundException('No slug has been sent to find an category in category\'s table.');
+                ->createNotFoundException('No find category in category\'s table.');
         }
-
-        $categoryName = ucwords(str_replace("-"," ",$categoryName));
-
 
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
-            ->findOneByName(mb_strtolower($categoryName));
+            ->findOneByName($categoryName);
+        $limit=3;
 
-        if (!$category) {
+        // Récupérer les articles par rapport à la catégorie récupérrer précédement.
 
             $articles = $this->getDoctrine()
                 ->getRepository(Article::class)
-                ->findOneByCategory($category);
+                ->findByCategory($category,['id'=>'DESC'],$limit);
             return $this->render(
-                'blog/category.html.twig', ['articles' => $articles,'category' => $category,]);
-        }
-
+                '/category.html.twig', ['articles' => $articles,'category' => $category,]
+            );
     }
 }
