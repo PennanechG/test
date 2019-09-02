@@ -28,7 +28,7 @@ class BlogController extends AbstractController
             throw $this->createNotFoundException('No article found in article\'s table.');
         }
 
-        return $this->render('/index.html.twig',['articles' => $articles]);
+        return $this->render('/blog/index.html.twig',['articles' => $articles]);
     }
 
     /**
@@ -36,7 +36,7 @@ class BlogController extends AbstractController
      *
      * @param string $slug The slugger
      *
-     * @Route("/blog/show/{slug<[a-z0-9\-]+>?article-sans-titre}", methods={"GET"}, name="show")
+     * @Route("/show/{slug<[a-z0-9\-]+>?article-sans-titre}", methods={"GET"}, name="show")
      *
      * @return Response A response instance
      */
@@ -61,13 +61,13 @@ class BlogController extends AbstractController
         }
 
         return $this->render(
-            '/show.html.twig', ['article' => $article,'slug' => $slug,]);
+            '/blog/show.html.twig', ['article' => $article,'slug' => $slug,]);
     }
 
     // Fonction permétant de retourné la page category.html.twig et demander la récupération des informations nécessaires dans la BDD.
 
     /**
-     * @Route("/category/{categoryName}", methods={"GET"}, name="category")
+     * @Route("/category/{categoryName}", methods={"GET"}, name="show_category")
      *
      * @return Response A response instance
      */
@@ -90,7 +90,7 @@ class BlogController extends AbstractController
                 ->getRepository(Article::class)
                 ->findByCategory($category,['id'=>'DESC'],$limit);
             return $this->render(
-                '/category.html.twig', ['articles' => $articles,'category' => $category,]
+                '/blog/category.html.twig', ['articles' => $articles,'category' => $category,]
             );
     }
 }
