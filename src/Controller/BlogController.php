@@ -82,7 +82,6 @@ class BlogController extends AbstractController
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
             ->findOneByName($categoryName);
-        $limit=3;
 
         // Récupérer les articles par rapport à la catégorie récupérrer précédement.
 
