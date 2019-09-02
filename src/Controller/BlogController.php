@@ -86,10 +86,9 @@ class BlogController extends AbstractController
 
         // Récupérer les articles par rapport à la catégorie récupérrer précédement.
 
-            $articles = $this->getDoctrine()
-                ->getRepository(Article::class)
-                ->findByCategory($category,['id'=>'DESC'],$limit);
-            return $this->render(
+            $articles = $category->getArticles();
+
+        return $this->render(
                 '/blog/category.html.twig', ['articles' => $articles,'category' => $category,]
             );
     }
