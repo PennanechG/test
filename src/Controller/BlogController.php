@@ -31,57 +31,22 @@ class BlogController extends AbstractController
         return $this->render('/blog/index.html.twig',['articles' => $articles]);
     }
 
-    /**
-     * Getting a article with a formatted slug for title
-     *
-     * @param string $slug The slugger
-     *
-     * @Route("/show/{slug<[a-z0-9\-]+>?article-sans-titre}", methods={"GET"}, name="show")
-     *
-     * @return Response A response instance
-     */
-    public function show($slug)
-    {
-        if (!$slug) {
-            throw $this
-                ->createNotFoundException('No slug has been sent to find an article in article\'s table.');
-        }
-
-        $slug = ucwords(str_replace("-"," ",$slug));
-
-
-        $article = $this->getDoctrine()
-            ->getRepository(Article::class)
-            ->findOneBy(['title' => mb_strtolower($slug)]);
-
-        if (!$article) {
-            throw $this->createNotFoundException(
-                'No article with '.$slug.' title, found in article\'s table.'
-            );
-        }
-
-        return $this->render(
-            '/blog/show.html.twig', ['article' => $article,'slug' => $slug,]);
-    }
-
     // Fonction permétant de retourné la page category.html.twig et demander la récupération des informations nécessaires dans la BDD.
 
     /**
-     * @Route("/category/{categoryName}", methods={"GET"}, name="show_category")
+     * @Route("/category/{name}", methods={"GET"}, name="show_category")
+     *
+     * @param Category $category
      *
      * @return Response A response instance
      */
-    public function showByCategory(string $categoryName) : Response
+    public function showByCategory(Category $category) : Response
     {
         // Si $categoryName n'exite pas alors retourné la phrase 'No find category in category's table.'
-        if (!$categoryName) {
+        if (!$category) {
             throw $this
                 ->createNotFoundException('No find category in category\'s table.');
         }
-
-        $category = $this->getDoctrine()
-            ->getRepository(Category::class)
-            ->findOneByName($categoryName);
 
         // Récupérer les articles par rapport à la catégorie récupérrer précédement.
 
@@ -91,4 +56,6 @@ class BlogController extends AbstractController
                 '/blog/category.html.twig', ['articles' => $articles,'category' => $category,]
             );
     }
+
+
 }

@@ -5,16 +5,27 @@
 {% block body %}
     {% for article in articles %}
         <div>
-            <h2>{{ article.id }} {{ article.title }}</h2>
+            <h2>{{ article.id }} - {{ article.title }}</h2>
             <p>{{ article.content }}</p>
         </div>
     {% else %}
         Aucun article trouvé.
     {% endfor %}
-    <a href="{{ path('show_category', { 'categoryName' : 'Javascript'}) }}">
-        Return Javascrip category.
-    </a>
-    <a href="{{ path('app_index') }}">
-        Back to homepage.
-    </a>
+    <div>
+        <a href="{{ path('show_category', { 'name' : 'Javascript'}) }}">
+            Javascript category.
+        </a>
+        <br>
+        <a href="{{ path('show_category', { 'name' : 'CatA'}) }}">
+            CatA category.
+        </a>
+        <br>
+        <a href="{{ path('show_category', { 'name' : 'CatB'}) }}">
+            CatB category.
+        </a>
+        <br>
+        <a href="{{ path('app_index') }}">
+            Back to homepage.
+        </a>
+    </div>
 {% endblock %}
